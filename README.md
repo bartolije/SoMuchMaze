@@ -10,6 +10,9 @@ TODO: Download, compile and start.
 ## Usage
 TODO: Nothing done, nothing to do
 
+## Documentation
+https://docs.google.com/document/d/11LMcbsSj-Hkn3nu-D5dflQwLVdDmO8_X4t1Vwv8H-hI/
+
 ## Contributing
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
