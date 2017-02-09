@@ -11,3 +11,5 @@ char getChar(int value);
 
 int * getTabSharedMemory(int size, int id);
 
+int * getLabyrinthe(int height, int width);
+

@@ -23,12 +23,14 @@ void printHeader(){
 }
 
 int main()
-{
-	
+{	
 	int * tabInfo = getLabyrintheInfo();
-	printf("%d\n", tabInfo[0]);
+	printf("Height : %d\n", tabInfo[0]);
+	printf("Width : %d\n", tabInfo[1]);
 
-	printf("%d\n", tabInfo[1]);
+	int * adjmatlab = getLabyrinthe(tabInfo[0], tabInfo[1]);
+	printLabyrinthe2(adjmatlab, tabInfo[0], tabInfo[1]);
+
     
     return 0;
 }

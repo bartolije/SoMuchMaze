@@ -43,18 +43,18 @@ int * generateLabyrinthe(int height, int width, int xdep, int ydep, int xarr, in
 	sharedtabinfo[3] = ydep;
 	sharedtabinfo[4] = xarr;
 	sharedtabinfo[5] = yarr;
+	
 
-/*
-	for(int i = 0; i <size; i++){
-		sharedtabadjmat[i] = 0;
-		printf("%d", sharedtabadjmat[i]);
-	}
+	int totalCells = height * width;
+	int indexCell = 0;
+	//Stocke les cases visitées, premiere case visitée : x = visitedcells[0][0], y = visitedcells[0][1]
+	int * visitedCells = allocateTab2(totalCells, 2);
 
-	//printf("\t\tLog : Ways created.\n");
-	/*
+	int visitedcellscount = 1;
+		
+	
 
-	printLabyrinthe2(sharedtabadjmat , height, width);
-*/
+
 	printf("\t\tLog : Generation succeeded.\n");
 
 	

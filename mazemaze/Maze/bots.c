@@ -24,6 +24,12 @@ int * getLabyrintheInfo(){
 	return labInfo;
 }
 
+int * getLabyrinthe(int height, int width){
+	int size = height * (width + (width - 1));
+	int * adjmatlab = getTabSharedMemory(size, 0);
+	return adjmatlab;
+}
+
 void printLabyrinthe(int ** labyrinthe, int height, int width){
 	printf("\t\tLog : Starting printing labyrinthe...\n");
 	printf("\t+");
