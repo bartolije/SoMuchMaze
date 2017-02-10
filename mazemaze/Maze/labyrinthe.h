@@ -23,3 +23,11 @@ int areAllAdjCellsBeenVisited(int ** visitedCells, int x, int y, int height, int
 int * createTabSharedMemory(int size, int id);
 
 void detachSharedMemory(int id, int size);
+
+int ** getalladjcellswithwallsintact(int xcell, int ycell, int height, int width, int * nbcells, int * adjmat);
+
+int ** getalladjcells(int xcell, int ycell, int height, int width, int * nbcells, int * adjmat);
+
+int areallwallsintact(int xcell, int ycell, int * adjmat, int height, int width);
+
+void getrandomadjcell(int * xcell, int * ycell, int height, int width, int * adjmat);

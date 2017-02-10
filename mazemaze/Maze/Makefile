@@ -1,11 +1,11 @@
 
-all : labyrinthe.exe bots.exe
+all : labyrinthe.sh bots.sh
 
-1: labyrinthe.exe
+1: labyrinthe.sh
 
-2: bots.exe
+2: bots.sh
 
-labyrinthe.exe : labyrinthemain.o labyrinthe.o
+labyrinthe.sh : labyrinthemain.o labyrinthe.o
 	gcc -o $@ labyrinthemain.o labyrinthe.o
 
 labyrinthemain.o : labyrinthemain.c labyrinthe.h
@@ -14,7 +14,7 @@ labyrinthemain.o : labyrinthemain.c labyrinthe.h
 labyrinthe.o : labyrinthe.c
 	gcc -o $@ -c labyrinthe.c
 
-bots.exe : botsmain.o bots.o
+bots.sh : botsmain.o bots.o
 	gcc -o $@ botsmain.o bots.o
 
 botsmain.o : botsmain.c bots.h
@@ -27,4 +27,4 @@ clean :
 	rm -f *.o core
 
 mrproper :
-	rm -f bots.exe
+	rm -f *.sh core
