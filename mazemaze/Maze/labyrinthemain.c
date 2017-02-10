@@ -31,10 +31,10 @@ int main()
 	scanf("%d", &height);
 	printf("\tQuelle largeur pour votre labyrinthe ? ");
 	scanf("%d", &width);
-	int xdep = 0;
-	int ydep = 0;
-	int xarr = height-1;
-	int yarr = width-1;
+	int xdep = -1;
+	int ydep = -1;
+	int xarr = -1;
+	int yarr = -1;
 	while(xdep < 0 || xdep > height - 1){
 		printf("\tQuelle position en x pour le point de départ ? ");
 		scanf("%d", &xdep);
@@ -54,7 +54,7 @@ int main()
 
 	generateLabyrinthe(height, width, xdep, ydep, xarr, yarr);
 	
-	printf("\tLabyrinthe stocké dans la mémoire partagée... Entrer une touche pour quitter le programme");
+	printf("\n\tLabyrinthe stocké dans la mémoire partagée... Entrer une touche pour quitter le programme ... ");
 
 	
 	scanf("%d", &xdep);

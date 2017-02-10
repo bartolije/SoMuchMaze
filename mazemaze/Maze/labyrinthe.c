@@ -7,7 +7,7 @@
 #include <sys/shm.h>
 
 
-#define DEBUG 0
+#define DEBUG 1
 #define KEY 12345
 
 ///	labyrinthe.c :
@@ -103,7 +103,7 @@ int * generateLabyrinthe(int height, int width, int xdep, int ydep, int xarr, in
 			visitedCells[indexCell][1] = currCell.y;
 			visitedcellscount++;
 			if(DEBUG == 1)printf("\t\tLog : IndexCell : %d, VisitedCells : %d\n", indexCell, visitedcellscount);
-			//freeTab2(adjcells, 4 ,2);
+			freeTab2(adjcells, 4 ,2);
 		}
 		else{
 			indexCell--;
@@ -396,7 +396,7 @@ int ** getalladjcellswithwallsintact(int xcell, int ycell, int height, int width
 		adjcells[*nbcells][1] = ycell;
 		*nbcells = *nbcells + 1;
 	}
-	if((ycell < 0) && (areallwallsintact(xcell, ycell-1, adjmat, height, width) == 1)){
+	if((ycell > 0) && (areallwallsintact(xcell, ycell-1, adjmat, height, width) == 1)){
 		adjcells[*nbcells][0] = xcell;
 		adjcells[*nbcells][1] = ycell - 1;
 		*nbcells = *nbcells + 1;
@@ -425,7 +425,7 @@ int ** getalladjcells(int xcell, int ycell, int height, int width, int * nbcells
 		*nbcells = *nbcells + 1;
 		printf("\t\tLog : Found a match. %d\n", *nbcells);
 	}
-	if(ycell < 0){
+	if(ycell > 0){
 		adjcells[*nbcells][0] = xcell;
 		adjcells[*nbcells][1] = ycell - 1;
 		*nbcells = *nbcells + 1;
