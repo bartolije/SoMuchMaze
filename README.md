@@ -13,6 +13,13 @@ TODO: Nothing done, nothing to do
 ## Documentation
 https://docs.google.com/document/d/11LMcbsSj-Hkn3nu-D5dflQwLVdDmO8_X4t1Vwv8H-hI/
 
+## Test
+Launch 2 terminals in the folder mazemaze/Maze/
+Launch ./labyrinthe.sh in the first one and init the maze by following instructions
+Leave the program launched
+Launch ./bots.sh in the second one
+
+
 ## Contributing
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
