@@ -7,6 +7,7 @@
 #include <sys/shm.h>
 
 
+#define DEBUG 0
 #define KEY 12345
 
 ///	labyrinthe.c :
@@ -24,7 +25,7 @@ typedef struct _Pos{
 ///'
 int * generateLabyrinthe(int height, int width, int xdep, int ydep, int xarr, int yarr){
 	
-	printf("\t\tLog : Starting labyrinthe generation...\n");
+	if(DEBUG == 1)printf("\t\tLog : Starting labyrinthe generation...\n");
 	
 	int * sharedtabadjmat;
 	
@@ -36,6 +37,7 @@ int * generateLabyrinthe(int height, int width, int xdep, int ydep, int xarr, in
 	int shmid2 = 1;
 
 	sharedtabadjmat = createTabSharedMemory(size, 0);
+	//sharedtabadjmat = calloc(size, sizeof(int));
 	sharedtabinfo = createTabSharedMemory(6, 1);
 	sharedtabinfo[0] = height;
 	sharedtabinfo[1] = width;
@@ -58,56 +60,67 @@ int * generateLabyrinthe(int height, int width, int xdep, int ydep, int xarr, in
 	int ** adjcells;
 	int countadjcells;
 	int randNum;
+	int indadjmat;
 	//Ajouter génération du labyrinthe
-	while(visitedcellscount < totalCells - 1){
+	while(visitedcellscount < totalCells){
 		adjcells = getalladjcellswithwallsintact(currCell.x, currCell.y, height, width, &countadjcells, sharedtabadjmat);
-		printf("\t\tLog : %d adj cells found\n", countadjcells);
+		if(DEBUG == 1)printf("\t\tLog : %d adj cells found\n", countadjcells);
 		if(countadjcells > 0){
 			visitedCells[indexCell][0] = currCell.x;
 			visitedCells[indexCell][1] = currCell.y;
-			randNum = div(rand(), countadjcells).rem;
-			printf("\t\tLog : Digging...\n");
+			if(DEBUG == 1)printf("\t\tLog : Old Cell : %d, %d\n", currCell.x, currCell.y);
+			randNum = div(rand(), countadjcells).rem;			
 			if(currCell.x - adjcells[randNum][0] == 1){
-				sharedtabadjmat[(currCell.x - 1)*(currCell.y * 2)] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Digging 0...\n");
+				indadjmat = (currCell.x-1)*((width*2)-1) + (currCell.y * 2);
+				sharedtabadjmat[indadjmat] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Index Wall %d...\n",indadjmat);
 			}
 			else if(currCell.y - adjcells[randNum][1] == 1){
-				sharedtabadjmat[(currCell.x)*((currCell.y * 2) - 1)] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Digging 1...\n");
+				indadjmat = currCell.x*((width*2)-1) + ((currCell.y * 2)-1);
+				sharedtabadjmat[indadjmat] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Index Wall %d...\n",indadjmat);
 			}
 			else if(currCell.x - adjcells[randNum][0] == -1){
-				sharedtabadjmat[(currCell.x)*(currCell.y * 2)] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Digging 2...\n");
+				indadjmat = currCell.x*((width*2)-1) + (currCell.y * 2);
+				sharedtabadjmat[indadjmat] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Index Wall %d...\n",indadjmat);
 			}
 			else if(currCell.y - adjcells[randNum][1] == -1){
-				sharedtabadjmat[(currCell.x)*((currCell.y * 2) + 1)] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Digging 3...\n");
+				indadjmat = currCell.x*((width*2)-1) + ((currCell.y * 2)+1);
+				sharedtabadjmat[indadjmat] = 1;
+				if(DEBUG == 1)printf("\t\tLog : Index Wall %d...\n",indadjmat);
 			}
-			printf("\t\tLog : Digging succeeded.\n");
+			if(DEBUG == 1)printf("\t\tLog : Digging succeeded.\n");
 			currCell.x = adjcells[randNum][0];
 			currCell.y = adjcells[randNum][1];
+			if(DEBUG == 1)printf("\t\tLog : New Cell : %d, %d\n", currCell.x, currCell.y);
 			indexCell++;
 			visitedCells[indexCell][0] = currCell.x;
 			visitedCells[indexCell][1] = currCell.y;
 			visitedcellscount++;
-			printf("\t\tLog : IndexCell : %d, VisitedCells : %d\n", indexCell, visitedcellscount);
+			if(DEBUG == 1)printf("\t\tLog : IndexCell : %d, VisitedCells : %d\n", indexCell, visitedcellscount);
 			//freeTab2(adjcells, 4 ,2);
 		}
 		else{
 			indexCell--;
-			printf("\t\tLog : IndexCell : %d, VisitedCells : %d\n", indexCell, visitedcellscount);
-			currCell.x = adjcells[indexCell][0];
-			currCell.y = adjcells[indexCell][1];
-			
+			if(DEBUG == 1)printf("\t\tLog : IndexCell : %d, VisitedCells : %d\n", indexCell, visitedcellscount);
+			currCell.x = visitedCells[indexCell][0];
+			currCell.y = visitedCells[indexCell][1];
+			if(DEBUG == 1)printf("\t\tLog : Coming back...\n");
 		}
+		//printLabyrinthe2(sharedtabadjmat, height, width);
 	}
 	
-	printLabyrinthe2(sharedtabadjmat, height, width);
+	printLabyrinthe2(sharedtabadjmat, height, width, xdep, ydep, xarr, yarr);
 
-	printf("\t\tLog : Generation succeeded.\n");
+	if(DEBUG == 1)printf("\t\tLog : Generation succeeded.\n");
+
 
 	
-	scanf("%d", &width);
-
-	detachSharedMemory(0, size);
-	
-	detachSharedMemory(1, 6);
 
 	return sharedtabadjmat;
 }
@@ -124,14 +137,14 @@ int * generateLabyrinthe(int height, int width, int xdep, int ydep, int xarr, in
 int ** allocateTab2(int height, int width){
 	int ** labyrinthe;
 	
-	printf("\t\tLog : Starting memory allocation...\n");
+	if(DEBUG == 1)printf("\t\tLog : Starting memory allocation...\n");
 	
 	//Allocation de la première dimension du tableau
 	labyrinthe = malloc(height * sizeof(*labyrinthe));
 
 	//Vérification que l'allocation a fonctionnée, quitte le programme en cas d'echec
 	if(labyrinthe == NULL){
-		printf("\t\tLog : First allocation failed, exiting.\n");
+		if(DEBUG == 1)printf("\t\tLog : First allocation failed, exiting.\n");
 		exit(EXIT_FAILURE);
 	}
 	
@@ -140,13 +153,13 @@ int ** allocateTab2(int height, int width){
 		labyrinthe[i] = calloc(width, sizeof(*(labyrinthe[i])));
 
 		if(labyrinthe[i] == NULL){
-			printf("\t\tLog : Second allocation failed on %d iteration, exiting.\n", i);
+			if(DEBUG == 1)printf("\t\tLog : Second allocation failed on %d iteration, exiting.\n", i);
 			freeTab2(labyrinthe, height, width);
 			exit(EXIT_FAILURE);
 		}
 	}
 
-	printf("\t\tLog : Allocation succeeded.\n");	
+	if(DEBUG == 1)printf("\t\tLog : Allocation succeeded.\n");	
 	
 	return labyrinthe;
 }
@@ -156,7 +169,7 @@ int ** allocateTab2(int height, int width){
 ///
 void freeTab2(int ** labyrinthe, int height, int width){
 
-	printf("\t\tLog : Starting memory clean...\n");
+	if(DEBUG == 1)printf("\t\tLog : Starting memory clean...\n");
 
 	for(int i = 0; i < height - 1; i++){
 		free(labyrinthe[i]);
@@ -164,24 +177,25 @@ void freeTab2(int ** labyrinthe, int height, int width){
 	free(labyrinthe);
 	labyrinthe = NULL;
 
-	printf("\t\tLog : Clean succeeded.\n");
+	if(DEBUG == 1)printf("\t\tLog : Clean succeeded.\n");
 }
 
 void printLabyrinthe(int ** labyrinthe, int height, int width){
-	printf("\t\tLog : Starting printing labyrinthe...\n");
-	printf("\t+");
+	if(DEBUG == 1)printf("\t\tLog : Starting printing labyrinthe...\n");
+	printf("\t\t\tLabyrinthe généré :\n");
+	printf("\t\t\t+");
 	for(int k = 0; k < width; k++){
 		printf("++");
 	}
 	printf("\n");
 	for(int i = 0; i < height; i++){
-		printf("\t+");
+		printf("\t\t\t+");
 		for (int j = 1; j < (width * 2) - 2; j=j+2){
 			printf(" %c", getChar(labyrinthe[i][j]));
 			
 		}
 		if(i != height -1){
-			printf(" +\n\t+");
+			printf(" +\n\t\t\t+");
 			for (int k = 0; k < (width * 2) - 1; k=k+2){
 				printf("%c+", getChar(labyrinthe[i][k]));
 			}
@@ -191,16 +205,16 @@ void printLabyrinthe(int ** labyrinthe, int height, int width){
 		}	
 		printf("\n");
 	}
-	printf("\t");
+	printf("\t\t\t");
 	for(int l = 0; l < width; l++){
 		printf("++");
 	}
 	printf("+\n");
-	printf("\t\tLog : Print succeeded.\n");
+	if(DEBUG == 1)printf("\t\tLog : Print succeeded.\n");
 }
 
-void printLabyrinthe2(int * labyrinthe, int height, int width){
-	printf("\t\tLog : Starting printing labyrinthe...\n");
+void printLabyrinthe2(int * labyrinthe, int height, int width, int xdep, int ydep, int xarr, int yarr){
+	if(DEBUG == 1)printf("\t\tLog : Starting printing labyrinthe...\n");
 	printf("\t+");
 	for(int k = 0; k < width; k++){
 		printf("++");
@@ -208,18 +222,31 @@ void printLabyrinthe2(int * labyrinthe, int height, int width){
 	printf("\n");
 	for(int i = 0; i < height; i++){
 		printf("\t+");
-		for (int j = 1; j < (width * 2) - 2; j=j+2){
-			printf(" %c", getChar(labyrinthe[i*j]));
+		for (int j = 1; j < (width * 2) - 2; j=j+2){	
+			if(i == xdep && div(j, 2).quot == ydep){
+				printf("D");
+			}else if(i == xarr && div(j, 2).quot == yarr){
+				printf("A");
+			}else {
+				printf(" ");
+			}
+			printf("%c", getChar(labyrinthe[i * (width*2 - 1) + j]));
 			
 		}
 		if(i != height -1){
 			printf(" +\n\t+");
 			for (int k = 0; k < (width * 2) - 1; k=k+2){
-				printf("%c+", getChar(labyrinthe[i*k]));
+				printf("%c+", getChar(labyrinthe[i * (width*2 - 1) + k]));
 			}
 		}else{
-			
-			printf(" +");
+			if(i == xdep && width - 1 == ydep){
+				printf("D");
+			}else if(i == xarr && width - 1 == yarr){
+				printf("A");
+			}else {
+				printf(" ");
+			}
+			printf("+");
 		}	
 		printf("\n");
 	}
@@ -228,9 +255,26 @@ void printLabyrinthe2(int * labyrinthe, int height, int width){
 		printf("++");
 	}
 	printf("+\n");
-	printf("\t\tLog : Print succeeded.\n");
+	if(DEBUG == 1)printf("\t\tLog : Print succeeded.\n");
 }
 
+/*
+void printMaze(int * lab, int height, int width){
+	printf("\t\tLog : Starting printing labyrinthe...\n");
+	printf("\t
+	for(int k = 0; k < width; k++{
+		printf(" +");
+	}
+	printf(" +\n");
+	for(int i = 0; i < height; i++){	
+		printf("\n\t+"
+		for(int j = 1; j < (width * 2) - 1; j++){
+			printf(" %c", getChar(lab[i * (width*2 - 1) + j]);
+		}
+		printf(" +\n\t+"
+	}
+
+}*/
 char getChar(int value){
 	if(value == 0){
 		return '+';
@@ -313,7 +357,7 @@ int areAllAdjCellsBeenVisited(int ** visitedCells, int x, int y, int height, int
 }
 
 int * createTabSharedMemory(int size, int id){
-	printf("\t\tLog : Creating shared memory segment...\n");
+	if(DEBUG == 1)printf("\t\tLog : Creating shared memory segment...\n");
 	int shm;
 	int * sharedmem;
 	key_t key;
@@ -327,10 +371,10 @@ int * createTabSharedMemory(int size, int id){
 		perror("shmget");
 		exit(EXIT_FAILURE);
 	}
-	printf("\t\tLog : Address : %d\n", shm);
+	if(DEBUG == 1)printf("\t\tLog : Address : %d\n", shm);
 	
 	sharedmem = shmat(shm, NULL, 0);
-	printf("\t\tLog : Creation succeeded.\n");
+	if(DEBUG == 1)printf("\t\tLog : Creation succeeded.\n");
 
 	return sharedmem;
 	
@@ -344,7 +388,7 @@ void detachSharedMemory(int id, int size){
 }
 
 int ** getalladjcellswithwallsintact(int xcell, int ycell, int height, int width, int * nbcells, int * adjmat){
-	printf("\t\tLog : Looking for neighbours cells with intacts walls...\n");
+	if(DEBUG == 1)printf("\t\tLog : Looking for neighbours cells with intacts walls...\n");
 	int ** adjcells = allocateTab2(4, 2);
 	*nbcells = 0;
 	if((xcell > 0) && (areallwallsintact(xcell-1, ycell, adjmat, height, width) == 1)){
@@ -366,7 +410,7 @@ int ** getalladjcellswithwallsintact(int xcell, int ycell, int height, int width
 		adjcells[*nbcells][1] = ycell + 1;
 		*nbcells = *nbcells + 1;
 	}
-	printf("\t\tLog : Found %d matches.\n", *nbcells);
+	if(DEBUG == 1)printf("\t\tLog : Found %d matches.\n", *nbcells);
 	return adjcells;
 }
 
@@ -433,6 +477,4 @@ void getrandomadjcell(int * xcell, int * ycell, int height, int width, int * adj
 	*xcell = adjCells[randNum][0];
 	*ycell = adjCells[randNum][1];
 }
-
-
 

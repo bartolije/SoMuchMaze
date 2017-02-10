@@ -8,7 +8,7 @@ void freeTab2(int ** labyrinthe, int height, int width);
 
 void printLabyrinthe(int ** labyrinthe, int height, int width);
 
-void printLabyrinthe2(int * labyrinthe, int height, int width);
+void printLabyrinthe2(int * labyrinthe, int height, int width, int xdep, int ydep, int xarr, int yarr);
 
 char getChar(int value);
 

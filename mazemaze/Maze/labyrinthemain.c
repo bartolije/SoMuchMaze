@@ -3,6 +3,7 @@
 #include <string.h>
 #include "labyrinthe.h"
 
+
 ///
 ///	Programme permettant la génération du labyrinthe
 ///
@@ -24,37 +25,45 @@ void printHeader(){
 
 int main()
 {
+	printHeader();
 	int height, width;
 	printf("\tQuelle hauteur pour votre labyrinthe ? ");
 	scanf("%d", &height);
 	printf("\tQuelle largeur pour votre labyrinthe ? ");
 	scanf("%d", &width);
-	 
-	generateLabyrinthe(height, width, 0, 0, height-1, width-1);
+	int xdep = 0;
+	int ydep = 0;
+	int xarr = height-1;
+	int yarr = width-1;
+	while(xdep < 0 || xdep > height - 1){
+		printf("\tQuelle position en x pour le point de départ ? ");
+		scanf("%d", &xdep);
+	}
+	while(ydep < 0 || ydep > width - 1){
+		printf("\tQuelle position en y pour le point de départ ? ");
+		scanf("%d", &ydep);
+	}
+	while(xarr < 0 || xarr > height - 1){
+		printf("\tQuelle position en x pour le point d'arrivée ? ");
+		scanf("%d", &xarr);
+	}
+	while(yarr < 0 || yarr > width - 1){
+		printf("\tQuelle position en y pour le point d'arrivée ? ");
+		scanf("%d", &yarr);
+	}
+
+	generateLabyrinthe(height, width, xdep, ydep, xarr, yarr);
 	
+	printf("\tLabyrinthe stocké dans la mémoire partagée... Entrer une touche pour quitter le programme");
 
-	//printLabyrinthe2(labyrinthe, height, width);
-	//freeTab2(labyrinthe, height, width);
-	/*
-	State state = INIT;
+	
+	scanf("%d", &xdep);
 
+	int size = height * (width + (width - 1));
 
-	//Boucle d'exécution du programme
-	while(state != DONE){
-		switch(state){
-			case INIT:
-				
-				break;
-			case RUNNING:
-
-				break;
-			case DONE:
-
-				break;
-		}
-	}*/
-
-	//printHeader();
+	detachSharedMemory(0, size);
+	
+	detachSharedMemory(1, 6);
 
     
     return 0;
